@@ -43,7 +43,7 @@ const App = () => {
   }
 
   return (
-    <div>
+    <>
       <h2>Phonebook</h2>
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
 
@@ -53,7 +53,7 @@ const App = () => {
       <h2>Numbers</h2>
       <Content persons={persons} newFilter={newFilter} />
     
-    </div>
+    </>
   )
 }
 
