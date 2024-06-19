@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import personService from './services/persons'
 import Form from './components/Form'
 import Filter from './components/Filter'
@@ -38,6 +37,17 @@ const App = () => {
     }
   }
 
+  const deletePerson = (id) => {
+    const person = persons.find(person => person.id === id)
+    if (window.confirm(`Delete ${person.name} ?`)) {
+      personService
+        .deletePerson(id)
+        .then(() => {
+          setPersons(persons.filter(person => person.id !== id))
+        })
+    }
+  }
+
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
@@ -59,7 +69,7 @@ const App = () => {
       <Form onSubmit={addPerson} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
 
       <h2>Numbers</h2>
-      <Content persons={persons} newFilter={newFilter} />
+      <Content persons={persons} newFilter={newFilter} deletePerson={deletePerson} />
     
     </>
   )
