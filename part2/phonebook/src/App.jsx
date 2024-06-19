@@ -24,8 +24,11 @@ const App = () => {
       name: newName,
       number: newNumber
     }
-    if (persons.find(person => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`)
+
+    const person = persons.find(person => person.name === newName)
+
+    if (person.name === newName) {
+      updatePerson(person)
     } else {
       personService
         .create(personObj)
@@ -34,6 +37,21 @@ const App = () => {
           setNewName('')
           setNewNumber('')
         })
+        .catch(error => {
+            alert(error.response.data.error)
+        })
+    }
+  }
+
+  const updatePerson = (person) => {
+    if (window.confirm(`${person.name} is already added to phonebook, replace the old number with a new one?`)) {
+      person = { ...person, number: newNumber }
+      personService
+        .update(person.id, person)
+        .then(returnedPerson => {
+          setPersons(persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson))
+        })
+
     }
   }
 
@@ -45,6 +63,9 @@ const App = () => {
         .then(() => {
           setPersons(persons.filter(person => person.id !== id))
         })
+        .catch(
+          console.log('deleting error')
+        )
     }
   }
 
@@ -66,7 +87,7 @@ const App = () => {
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
 
       <h2>add a new</h2>
-      <Form onSubmit={addPerson} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
+      <Form onSubmit={addPerson} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} updatePerson={updatePerson}/>
 
       <h2>Numbers</h2>
       <Content persons={persons} newFilter={newFilter} deletePerson={deletePerson} />
