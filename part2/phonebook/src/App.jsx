@@ -3,12 +3,15 @@ import personService from './services/persons'
 import Form from './components/Form'
 import Filter from './components/Filter'
 import Content from './components/Content'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [successMessage, setSuccessMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -27,19 +30,25 @@ const App = () => {
 
     const person = persons.find(person => person.name === newName)
 
-    if (person.name === newName) {
-      updatePerson(person)
-    } else {
+    if (!person) {
       personService
         .create(personObj)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
+          setSuccessMessage(
+            `Added ${returnedPerson.name}`
+          )
+          setTimeout(() => {
+              setSuccessMessage(null)
+          }, 5000)
         })
         .catch(error => {
             alert(error.response.data.error)
         })
+    } else if (person.name === newName) {
+      updatePerson(person)
     }
   }
 
@@ -50,6 +59,12 @@ const App = () => {
         .update(person.id, person)
         .then(returnedPerson => {
           setPersons(persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson))
+          setSuccessMessage(
+            `Updated ${returnedPerson.name}`
+          )
+          setTimeout(() => {
+              setSuccessMessage(null)
+          }, 5000)
         })
 
     }
@@ -84,6 +99,8 @@ const App = () => {
   return (
     <>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} type="error" />
+      <Notification message={successMessage} type="success" />
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
 
       <h2>add a new</h2>
