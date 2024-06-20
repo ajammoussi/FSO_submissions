@@ -66,6 +66,15 @@ const App = () => {
               setSuccessMessage(null)
           }, 5000)
         })
+        .catch((error) => {
+          console.log(error)
+          setPersons(persons.filter(p => p.id !== person.id))
+          setNewName('')
+          setNewNumber('')
+          setErrorMessage(
+            `Information of ${person.name} has already been removed from server`
+          )
+        })
 
     }
   }
