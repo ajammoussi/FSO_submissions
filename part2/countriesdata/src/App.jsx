@@ -3,7 +3,7 @@ import axios from 'axios'
 import Content from './components/Content.jsx'
 import Filter from './components/Filter.jsx'
 
-function App() {
+const App = () => {
   const [filter, setFilter] = useState('')
   const [countries, setCountries] = useState([])
   const [foundCountries, setFoundCountries] = useState([])
@@ -18,19 +18,23 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if (filter) {
-      const filteredCountries = countries.filter(c => 
-        c.name.common.toLowerCase().includes(filter.toLowerCase())
-      );
-      setFoundCountries(filteredCountries)
+    if (!filter) {
+      setFoundCountries([]);
     } else {
-      setFoundCountries([])
+      const filteredCountries = countries.filter(c => 
+      c.name.common.toLowerCase().includes(filter.toLowerCase()));
+    setFoundCountries(filteredCountries)
     }
   }, [filter, countries])
 
-const handleChangeCountry = (event) => {
-  setFilter(event.target.value);
+  const handleChangeCountry = (event) => {
+  setFilter(event.target.value)
 }
+
+  const handleShowCountry = (countryName) => {
+    const selectedCountry = countries.filter(c => c.name.common === countryName);
+    setFoundCountries(selectedCountry);
+  }
 
   console.log("here are the countries", countries)
 
@@ -40,7 +44,7 @@ const handleChangeCountry = (event) => {
     <>
       <div>
         <Filter value={filter} onChange={handleChangeCountry} />
-        <Content countries={foundCountries} />
+        <Content countries={foundCountries} setCountries={setCountries} handleShowCountry={handleShowCountry} />
       </div>
     </>
   )

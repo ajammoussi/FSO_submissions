@@ -1,33 +1,21 @@
-const Content = ({ countries }) => {
+import Country from "./Country";
+
+const Content = ({ countries, handleShowCountry}) => {
+
     if (countries.length === 1) {
         const country = countries[0];
         return (
-            <div>
-                <h1>{country.name.common}</h1>
-                <p>capital {country.capital[0]}<br/>
-                area {country.area}</p>
-                <h3>languages:</h3>
-                <ul>
-                    {/* iterate over the languages object and display the language names */}
-                    {Object.values(country.languages).map((language) => (
-                        <li key={language}>{language}</li>
-                    ))}
-                    
-                </ul>
-                <img 
-                    src={country.flags.png} 
-                    alt={country.flags.alt} 
-                    width="200" 
-                    style={{border: "0.5px solid black"}}
-                />
-            </div>
-        );
+            <Country country={country} />
+        )
     }
     if (2 <= countries.length <= 10) {
         return (
             <ul>
-                {countries.map((country) => (
-                    <li key={country.name.common}>{country.name.common}</li>
+                {countries.map((country, i) => (
+                    <li key={i}>
+                        {country.name.common}
+                        <button onClick={() => {handleShowCountry(country.name.common)}}>show</button>
+                    </li>
                 ))}
             </ul>
         );
